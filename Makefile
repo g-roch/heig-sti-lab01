@@ -10,3 +10,6 @@ start:
 stop:
 	docker stop sti_project
 	docker rm sti_project
+
+shell:
+	docker exec -itu root sti_project /bin/bash

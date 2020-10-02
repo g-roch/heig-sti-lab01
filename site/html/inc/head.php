@@ -1,7 +1,11 @@
 <?php
+//Fichier envoyant l'entête html
+
+	//Définition des menus
 	$page = $_SERVER['SCRIPT_NAME'];
 	$menu = [];
 	$menu2 = [];
+		
 	if(CONNECTED) {
 	 	$menu2['Logout'] = '/login.php?logout';
 		$menu2[$_SESSION['user']['username']] = '#';
@@ -40,6 +44,7 @@ blockquote {
 </style>
 	</head>
 	<body>
+		<!-- Barre de navigation -->
 		<nav class="navbar navbar-expand-md navbar-light bg-light">
 			<a class="navbar-brand" href="#">iText</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

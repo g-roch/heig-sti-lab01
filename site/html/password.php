@@ -6,6 +6,8 @@ require 'inc/head.php';
 
 $error = false;
 $errmsg = '';
+
+//Modification du mot de passe de l'utilisateur (si le mdp acctuel est correcte et si le nouveau et la confirmation sont identiques)
 if(isset(
 	$_POST['currentPassword'],
 	$_POST['password'],
@@ -37,6 +39,7 @@ if(isset(
 	}
 }
 
+//Message d'alerte si necessaire
 if($errmsg != '') {
 ?>
 	<div class="alert alert-<?= $error ? 'danger' : 'success' ?> alert-dismissible fade show" role="alert">
@@ -53,6 +56,7 @@ if($errmsg != '') {
 <h1>Change your password</h1>
 <div class="row">
 	<div class="mx-auto col-3">
+		<!-- Formulaire de modification de mdp  -->
 		<form method="post">
 			<div class="form-group">
 				<label for="currentPassword">Current password</label>

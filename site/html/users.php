@@ -4,11 +4,13 @@ require_once 'inc/bootstrap.php';
 
 require 'inc/head.php';
 
+/*Vérifie que l'utilisateur est administrateur*/
 if(!ADMIN) {
 	require 'inc/foot.php';
 	exit();
 }
 
+/*Suppression de l'utilisateur selectionne*/
 if(isset($_GET['delete'])) {
 	$statement = $pdo->prepare('DELETE FROM `users` WHERE `id` = :id');
 	$statement->execute([':id' => $_GET['delete']]);
@@ -16,6 +18,7 @@ if(isset($_GET['delete'])) {
 	exit();
 }
 
+/*Affichage d'un message d'alerte*/
 function alert($message) {
 ?>
 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -29,8 +32,10 @@ function alert($message) {
 
 $success = 0;
 
-
+//Traitement des modifications demandés par l'utilisateur
 foreach($_POST as $id => $value) {
+
+	//Ajout d'un nouvel enregistrement
 	if($id === 'new') {
 		if(isset(
 			$value['username'],
@@ -58,22 +63,20 @@ foreach($_POST as $id => $value) {
 				continue;
 			}
 		}
+	//Modification de l'existant
 	} elseif(is_int($id)) {
 		if(isset(
-			$value['username'],
 			$value['password'],
 			$value['confirm-password']
-		) && $value['username'] != ''
-		) {
+		)) {
 			if($value['password'] !== $value['confirm-password']) {
 				alert("Password and confirm for <strong>$id</strong> user don't match");
 				continue;
 			}
 			$isadmin = isset($value['isadmin']) && ($value['isadmin'] == 'on' || $value['isadmin'] == 'true');
 			$isactive = isset($value['isactive']) && ($value['isactive'] == 'on' || $value['isactive'] == 'true');
-			$statement = $pdo->prepare('UPDATE `users` SET `username` = :username, '. ($value['password'] != '' ? '`password` = :password,' : '') . '`isAdmin` = :isAdmin, `isActive` = :isActive WHERE `id` = :id');
+			$statement = $pdo->prepare('UPDATE `users` SET '. ($value['password'] != '' ? '`password` = :password,' : '') . '`isAdmin` = :isAdmin, `isActive` = :isActive WHERE `id` = :id');
 			$data = [
-				':username' => $value['username'],
 				':isAdmin' => $isadmin,
 				':isActive' => $isactive,
 				':id' => $id,
@@ -97,6 +100,7 @@ foreach($_POST as $id => $value) {
 ?>
 
 <script>
+	//Fonctions permettant de modifier une ligne du tableau en formulaire d'édition
 	function edit_input(td, id, name) {
 		value = td.text();
 		td.html('<input type="text" />');
@@ -134,7 +138,7 @@ foreach($_POST as $id => $value) {
 	function edit_row(me) {
 		row = $(me).parent().parent();
 		id = row.children('.field-id').text();
-		edit_input(row.children('.field-username'), id, 'username');
+		//edit_input(row.children('.field-username'), id, 'username');
 		edit_password(row.children('.field-password'), id, 'password');
 		edit_checkbox(row.children('.field-admin'), id, 'isadmin');
 		edit_checkbox(row.children('.field-active'), id, 'isactive');
@@ -145,6 +149,7 @@ foreach($_POST as $id => $value) {
 <h1>Users list</h1>
 <div class="row">
 	<div class="col">
+		<!-- Affichage de la liste des utilisateurs  -->
 		<form method="post">
 		<table class="table table-bordered table-hover table-sm">
 			<thead>
@@ -172,7 +177,7 @@ foreach($_POST as $id => $value) {
 				</tr>
 				<?php endforeach; ?>
 			</tbody>
-			<tfoot>
+			<tfoot><!--Formulaire d'ajout d'un nouvel utilisateur-->
 				<tr>
 					<td>-</td>
 					<td><input type="text" name="new[username]" placeholder="username" /></td>

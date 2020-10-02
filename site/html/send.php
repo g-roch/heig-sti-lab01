@@ -5,13 +5,15 @@ require 'inc/head.php';
 
 $userid = $_SESSION['user']['userid'];
 
+/*Vérifie l'effectif du message*/
 if(isset(
 	$_POST['to'],
 	$_POST['subject'],
 	$_POST['body']) &&
 	is_numeric($_POST['to']) &&
 	$_POST['subject'] != "" && 
-	$_POST['body'] != ""){
+	$_POST['body'] != ""
+){
 
 	$statement = $pdo->prepare("INSERT INTO messages (`subject`,`body`,`from`,`to`) VALUES (:subject,:body,$userid,:to)");
 	$execute = $statement->execute([':subject'=>$_POST['subject'],':body'=>$_POST['body'],':to'=>$_POST['to']]);
@@ -35,10 +37,14 @@ $users = $pdo->query('SELECT `id`, `username` FROM `users`');
 $subject = '';
 $body = '';
 $to = '';
+
+/*Gestion de la réponse d'un message*/
 if(isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
 	$statement = $pdo->prepare('SELECT * FROM `messages` WHERE `id` = :id');
 	$statement->execute([':id' => $_GET['replyto']]);
 	$a = $statement->fetch();
+
+	/*Vérification qu'un message a été envoyé à l'utilisateur connecté*/
 	if(is_array($a) && $a['to'] == $_SESSION['user']['userid']) {
 		if(substr($a['subject'], 0, 4) != 'RE: ') {
 			$subject = "RE: $a[subject]";
@@ -55,6 +61,7 @@ if(isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
 <h1>Send message</h1>
 <div class="row">
 	<div class="mx-auto col-10">
+		<!--Formulaire d'envoi d'un message -->
 		<form method="post">
 			<div class="row">
 				<div class="form-group col-3">

@@ -4,6 +4,7 @@ require_once 'inc/bootstrap.php';
 
 require 'inc/head.php';
 
+/*Supprime le message choisi*/
 if(isset($_GET['delete'])) {
 	$statement = $pdo->prepare('DELETE FROM `messages` WHERE `id` = :id');	
 	$statement->execute([':id' => $_GET['delete']]);
@@ -11,19 +12,9 @@ if(isset($_GET['delete'])) {
 	exit();
 }
 
-function alert($message) {
-?>
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-	<strong>Error</strong> <?= $message ?>
-	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-		<span aria-hidden="true">&times;</span>
-	</button>
-</div>
-<?php
-}
-
 $success = 0;
 
+/*Recuperation des messages pour l'utilisateur connecté*/
 $messages = $pdo->prepare(<<<'SQL'
 SELECT 
 	`messages`.`id`, 
@@ -43,6 +34,7 @@ $messages->execute([':id' => $_SESSION['user']['userid']]);
 <h1>Mailbox</h1>
 <div class="row">
 	<div class="col">
+		<!-- Affichage des messages -->
 		<form method="post">
 		<table class="table table-bordered table-hover table-sm">
 			<thead>

@@ -1,13 +1,18 @@
 <?php
 	$page = $_SERVER['SCRIPT_NAME'];
 	$menu = [];
+	$menu2 = [];
+	if(CONNECTED) {
+	 	$menu2['Logout'] = '/login.php?logout';
+		$menu2[$_SESSION['user']['username']] = '#';
+	} else {
+	 	$menu2['Login'] = '/login.php';
+	}
 	
 	if(CONNECTED) {
 	 	$menu['Mailbox'] = '/mailbox.php';
+	 	$menu['New message'] = '/send.php';
 		$menu['Change password'] = '/password.php';
-	 	$menu['Logout'] = '/login.php?logout';
-	} else {
-	 	$menu['Login'] = '/login.php';
 	}
 	if(ADMIN) {
 		$menu['Users'] = '/users.php';
@@ -24,6 +29,15 @@
 		<link rel="stylesheet" href="/css/bootstrap.min.css" />
 
 		<title>Hello, world!</title>
+<style>
+h1 { text-align:center}
+blockquote { 
+	margin-left: 1em;
+	border: solid black 0;
+	border-left-width: 1px;
+	padding-left: 0.3em;
+}
+</style>
 	</head>
 	<body>
 		<nav class="navbar navbar-expand-md navbar-light bg-light">
@@ -32,8 +46,22 @@
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarNav">
-				<ul class="navbar-nav">
+				<ul class="navbar-nav mr-auto">
 					<?php foreach($menu as $name => $url): ?>
+						<?php if(0 === strpos($url, $page)): ?>
+							<li class="nav-item active">
+								<a class="nav-link" href="<?= htmlentities($url) ?>"><?= htmlentities($name) ?> <span class="sr-only">(current)</span></a>
+							</li>
+						<?php else: ?>
+							<li class="nav-item">
+								<a class="nav-link" href="<?= htmlentities($url) ?>"><?= htmlentities($name) ?></a>
+							</li>
+						<?php endif; ?>
+					<?php endforeach; ?>
+	
+				</ul>
+				<ul class="navbar-nav">
+					<?php foreach($menu2 as $name => $url): ?>
 						<?php if(0 === strpos($url, $page)): ?>
 							<li class="nav-item active">
 								<a class="nav-link" href="<?= htmlentities($url) ?>"><?= htmlentities($name) ?> <span class="sr-only">(current)</span></a>

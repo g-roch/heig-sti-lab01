@@ -50,6 +50,7 @@ if($errmsg != '') {
 
 
 ?>
+<h1>Change your password</h1>
 <div class="row">
 	<div class="mx-auto col-3">
 		<form method="post">

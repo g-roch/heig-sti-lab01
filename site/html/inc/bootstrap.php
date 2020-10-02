@@ -1,5 +1,19 @@
 <?php
 
+set_exception_handler(function($e) {
+?>
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error <?= htmlentities($e->getCode()) ?></strong> <?= htmlentities($e->getMessage()) ?>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.min.js"></script>
+</div>
+<?php
+});
+
 define("MAX_CONNEXION_TIME", 60*60*1);
 define("MAX_WAIT_TIME", 60*30);
 
@@ -13,8 +27,6 @@ $pdo = new PDO(
 	]
 );
 
-$sql = "CREATE TABLE 'messages' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'subject' TEXT NOT NULL, 'body' TEXT NOT NULL, 'dateSent' DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 'dateReceive' DATETIME DEFAULT NULL, 'from' INTEGER NOT NULL);";
-$sql = "CREATE TABLE 'users' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'isActive' BOOLEAN NOT NULL DEFAULT 0, 'isAdmin' BOOLEAN NOT NULL DEFAULT 0, 'username' TEXT NOT NULL DEFAULT '', 'password' TEXT NOT NULL DEFAULT '');";
 
 session_start();
 $connected = 

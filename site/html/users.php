@@ -16,7 +16,6 @@ if(isset($_GET['delete'])) {
 	exit();
 }
 
-
 function alert($message) {
 ?>
 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -30,6 +29,7 @@ function alert($message) {
 
 $success = 0;
 
+
 foreach($_POST as $id => $value) {
 	if($id === 'new') {
 		if(isset(
@@ -42,8 +42,8 @@ foreach($_POST as $id => $value) {
 				alert("Password and confirm for <strong>new</strong> user don't match");
 				continue;
 			}
-			$isadmin = isset($value['isadmin']) && $value['isadmin'] == 'on' || $value['isadmin'] == 'true';
-			$isactive = isset($value['isactive']) && $value['isactive'] == 'on' || $value['isactive'] == 'true';
+			$isadmin = isset($value['isadmin']) && ($value['isadmin'] == 'on' || $value['isadmin'] == 'true');
+			$isactive = isset($value['isactive']) && ($value['isactive'] == 'on' || $value['isactive'] == 'true');
 			$statement = $pdo->prepare('INSERT INTO `users` (`username`, `password`, `isAdmin`, `isActive`) VALUES (:username, :password, :isAdmin, :isActive)');
 			if($statement->execute([
 				':username' => $value['username'],
@@ -69,8 +69,8 @@ foreach($_POST as $id => $value) {
 				alert("Password and confirm for <strong>$id</strong> user don't match");
 				continue;
 			}
-			$isadmin = isset($value['isadmin']) && $value['isadmin'] == 'on' || $value['isadmin'] == 'true';
-			$isactive = isset($value['isactive']) && $value['isactive'] == 'on' || $value['isactive'] == 'true';
+			$isadmin = isset($value['isadmin']) && ($value['isadmin'] == 'on' || $value['isadmin'] == 'true');
+			$isactive = isset($value['isactive']) && ($value['isactive'] == 'on' || $value['isactive'] == 'true');
 			$statement = $pdo->prepare('UPDATE `users` SET `username` = :username, '. ($value['password'] != '' ? '`password` = :password,' : '') . '`isAdmin` = :isAdmin, `isActive` = :isActive WHERE `id` = :id');
 			$data = [
 				':username' => $value['username'],
@@ -142,6 +142,7 @@ foreach($_POST as $id => $value) {
 	}
 </script>
 
+<h1>Users list</h1>
 <div class="row">
 	<div class="col">
 		<form method="post">

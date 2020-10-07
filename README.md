@@ -41,7 +41,7 @@ Lorsque l'utilisateur veut accéder à une page et qu'il n'est pas connecté la 
 
 Sa session a une durée de vie maximale de 1h, et de 30 minutes sans activité.
 
-Si l'utilisateur essaie d'accèder à une page auquel il n'a pas le droit, une page vide sera affichée.
+Si l'utilisateur essaie d'accéder à une page auquel il n'a pas le droit, une page vide sera affichée.
 
 ### Réception des messages (`mailbox.php`)
 
@@ -64,7 +64,7 @@ déroulé correctement.
 La page *Change password* permet à l'utilisateur de changer son mot de passe. Pour cela, il doit rentrer 
 son mot de passe actuel ainsi que deux fois le nouveau mot de passe.
 
-### Adminsitration des utilisateurs (`users.php`)
+### Administration des utilisateurs (`users.php`)
 
 La page *Users* permet de lister les utilisateurs du site web. Cette page n'est accessible que pour les utilisateurs ayant
 le droit admin. 
@@ -73,24 +73,3 @@ Pour chaque utilisateur, l'administrateur peut changer son mot de passe, activer
 les droits d'administration. Il peut également supprimer définitivement un compte.
 
 Les administrateurs peuvent également créer des nouveaux utilisateurs sur cette page.
-
--------
-
-Si vous utilisez l'image Docker proposée pour le cours, vous pouvez copier directement le repertoire "site" et son contenu (explications dans la donnée du projet).
-
-Le repertoire "site" contient deux repertoires :
-
-    - databases
-    - html
-
-Le repertoire "databases" contient :
-
-    - database.sqlite : un fichier de base de données SQLite
-
-Le repertoire "html" contient :
-
-    - exemple.php : un fichier php qui réalise des opérations basiques SQLite sur le fichier contenu dans le repertoire databases
-    - helloworld.php : un simple fichier hello world pour vous assurer que votre container Docker fonctionne correctement
-    - phpliteadmin.php : une interface d'administration pour la base de données SQLite qui se trouve dans le repertoire databases
-
-Le mot de passe pour phpliteadmin est "admin".

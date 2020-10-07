@@ -66,8 +66,8 @@ if(isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
 			<div class="row">
 				<div class="form-group col-3">
 					<label for="to">To</label>
-					<select class="form-control" id="to" name="to">
-						<?php foreach($users as $user) if($user['id'] != $userid ) if($userid == $to): ?>
+					<select class="form-control" disabled id="to" name="to">
+						<?php foreach($users as $user) if($user['id'] != $userid ) if($user['id'] == $to): ?>
 							<option selected value="<?= htmlentities($user['id']) ?>"><?= htmlentities($user['username']) ?></option>
 						<?php else: ?>
 							<option value="<?= htmlentities($user['id']) ?>"><?= htmlentities($user['username']) ?></option>

@@ -55,7 +55,12 @@ $messages->execute([':id' => $_SESSION['user']['userid']]);
 					<td class="field-action">
 						<button type="button" class="btn btn-outline-primary btn-sm" onclick="
 $('#modaleBody').html($('#body-<?= htmlentities($message['id']) ?>').html());
-$('#modalTitle').html($('#subject-<?= htmlentities($message['id']) ?>').html());$('#exampleModal').modal()
+$('#modalTitle').html($('#subject-<?= htmlentities($message['id']) ?>').html());
+$('#modalDate').html('<?= htmlentities((new DateTime($message['dateSent']))->format("l, F jS Y H:i:s")) ?>');
+$('#modalFrom').html('<?= htmlentities($message['from']) ?>');
+$('#modalReply').attr('href', 'send.php?replyto=<?= htmlentities($message['id']) ?>');
+$('#modalDelete').attr('href', '?delete=<?= htmlentities($message['id']) ?>');
+$('#exampleModal').modal();
 ">view</button>
 						<a href="send.php?replyto=<?= htmlentities($message['id']) ?>" class="btn btn-outline-warning btn-sm">reply</a>
 						<a href="?delete=<?= htmlentities($message['id']) ?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure ?')">delete</a>
@@ -73,16 +78,22 @@ $('#modalTitle').html($('#subject-<?= htmlentities($message['id']) ?>').html());
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalTitle">Modal title</h5>
+        <h5 class="modal-title"><span id="modalTitle">Modal title</span></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
+      </div>
+      <div class="modal-body">
+	From : <span id="modalFrom" ></span> <br />
+	Date : <span id="modalDate" ></span>
       </div>
       <div class="modal-body" id="modaleBody">
         ...
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	<a id="modalReply" href="#" class="btn btn-outline-warning">reply</a>
+	<a id="modalDelete" href="#" class="btn btn-outline-danger" onclick="return confirm('Are you sure ?')">delete</a>
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

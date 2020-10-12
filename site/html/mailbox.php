@@ -6,8 +6,7 @@ require 'inc/head.php';
 
 /*Supprime le message choisi*/
 if(isset($_GET['delete'])) {
-	$statement = $pdo->prepare('DELETE FROM `messages` WHERE `id` = :id');	
-	$statement->execute([':id' => $_GET['delete']]);
+	$statement = $pdo->query("DELETE FROM `messages` WHERE `id` = $_GET[delete]");	
 	header('Location: ?');
 	exit();
 }
@@ -15,7 +14,7 @@ if(isset($_GET['delete'])) {
 $success = 0;
 
 /*Recuperation des messages pour l'utilisateur connecté*/
-$messages = $pdo->prepare(<<<'SQL'
+$messages = $pdo->query(<<<SQL
 SELECT 
 	`messages`.`id`, 
 	`users`.`username` AS `from`, 
@@ -24,11 +23,10 @@ SELECT
 	`messages`.`body` 
 FROM `messages` 
 	LEFT JOIN `users` ON `messages`.`from` = `users`.`id`  
-WHERE `messages`.`to` = :id
+WHERE `messages`.`to` = '{$_SESSION['user']['userid']}'
 ORDER BY `dateSent` DESC
 SQL
 );
-$messages->execute([':id' => $_SESSION['user']['userid']]);
 ?>
 
 <h1>Mailbox</h1>

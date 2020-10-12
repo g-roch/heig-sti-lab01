@@ -12,8 +12,7 @@ if(!ADMIN) {
 
 /*Suppression de l'utilisateur selectionne*/
 if(isset($_GET['delete'])) {
-	$statement = $pdo->prepare('DELETE FROM `users` WHERE `id` = :id');
-	$statement->execute([':id' => $_GET['delete']]);
+	$statement = $pdo->query("DELETE FROM `users` WHERE `id` = $_GET[delete]");
 	header('Location: ?');
 	exit();
 }
@@ -49,13 +48,7 @@ foreach($_POST as $id => $value) {
 			}
 			$isadmin = isset($value['isadmin']) && ($value['isadmin'] == 'on' || $value['isadmin'] == 'true');
 			$isactive = isset($value['isactive']) && ($value['isactive'] == 'on' || $value['isactive'] == 'true');
-			$statement = $pdo->prepare('INSERT INTO `users` (`username`, `password`, `isAdmin`, `isActive`) VALUES (:username, :password, :isAdmin, :isActive)');
-			if($statement->execute([
-				':username' => $value['username'],
-				':password' => password_hash($value['password'], PASSWORD_DEFAULT),
-				':isAdmin' => $isadmin,
-				':isActive' => $isactive,
-			])) {
+			if($pdo->query("INSERT INTO `users` (`username`, `password`, `isAdmin`, `isActive`) VALUES ('$value[username]', '".password_hash($value['password'], PASSWORD_DEFAULT)."', '$isadmin', '$isactive')")) {
 				++$success;
 				continue;
 			} else {
@@ -75,15 +68,8 @@ foreach($_POST as $id => $value) {
 			}
 			$isadmin = isset($value['isadmin']) && ($value['isadmin'] == 'on' || $value['isadmin'] == 'true');
 			$isactive = isset($value['isactive']) && ($value['isactive'] == 'on' || $value['isactive'] == 'true');
-			$statement = $pdo->prepare('UPDATE `users` SET '. ($value['password'] != '' ? '`password` = :password,' : '') . '`isAdmin` = :isAdmin, `isActive` = :isActive WHERE `id` = :id');
-			$data = [
-				':isAdmin' => $isadmin,
-				':isActive' => $isactive,
-				':id' => $id,
-			];
-			if($value['password'] != '') 
-				$data[':password'] = password_hash($value['password'], PASSWORD_DEFAULT);
-			if($statement->execute($data)) {
+			$statement = $pdo->query('UPDATE `users` SET '. ($value['password'] != '' ? '`password` = '.password_hash($value['password'], PASSWORD_DEFAULT).',' : '') . "`isAdmin` = $isadmin, `isActive` = $isactive WHERE `id` = $id");
+			if($statement) {
 				++$success;
 				continue;
 			} else {

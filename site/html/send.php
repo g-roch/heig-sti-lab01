@@ -5,6 +5,7 @@ require 'inc/head.php';
 
 $userid = $_SESSION['user']['userid'];
 
+var_dump($_POST);
 /*Vérifie l'effectif du message*/
 if(isset(
 	$_POST['to'],
@@ -15,12 +16,11 @@ if(isset(
 	$_POST['body'] != ""
 ){
 
-	$statement = $pdo->prepare("INSERT INTO messages (`subject`,`body`,`from`,`to`) VALUES (:subject,:body,$userid,:to)");
-	$execute = $statement->execute([':subject'=>$_POST['subject'],':body'=>$_POST['body'],':to'=>$_POST['to']]);
+	$statement = $pdo->query("INSERT INTO messages (`subject`,`body`,`from`,`to`) VALUES ('$_POST[subject]','$_POST[body]','$userid','$_POST[to]')");
 	
-	$message = $execute?'Message sent':'Message not sent';
-	$title = $execute?'Success':'Error';
-	$color = $execute?'success':'danger';
+	$message = $statement?'Message sent':'Message not sent';
+	$title = $statement?'Success':'Error';
+	$color = $statement?'success':'danger';
 ?>
 <div class="alert alert-<?=$color?> alert-dismissible fade show" role="alert">
   <strong><?= $title ?></strong> <?= $message ?>
@@ -40,8 +40,7 @@ $to = '';
 
 /*Gestion de la réponse d'un message*/
 if(isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
-	$statement = $pdo->prepare('SELECT * FROM `messages` WHERE `id` = :id');
-	$statement->execute([':id' => $_GET['replyto']]);
+	$statement = $pdo->query("SELECT * FROM `messages` WHERE `id` = '$_GET[replyto]'");
 	$a = $statement->fetch();
 
 	/*Vérification qu'un message a été envoyé à l'utilisateur connecté*/
@@ -62,11 +61,14 @@ if(isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
 <div class="row">
 	<div class="mx-auto col-10">
 		<!--Formulaire d'envoi d'un message -->
-		<form method="post">
+		<form method="post" action="?">
 			<div class="row">
 				<div class="form-group col-3">
 					<label for="to">To</label>
-					<select class="form-control" disabled id="to" name="to">
+<?php if(isset($_GET['replyto'])): ?>
+<input type="hidden" name="to" value="<?= $to ?>" />
+<?php endif; ?>
+					<select class="form-control" <?= isset($_GET['replyto']) ? 'disabled' : '' ?>  id="to" name="to">
 						<?php foreach($users as $user) if($user['id'] != $userid ) if($user['id'] == $to): ?>
 							<option selected value="<?= htmlentities($user['id']) ?>"><?= htmlentities($user['username']) ?></option>
 						<?php else: ?>

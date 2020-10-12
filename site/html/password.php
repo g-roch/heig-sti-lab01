@@ -13,8 +13,7 @@ if(isset(
 	$_POST['password'],
 	$_POST['confirmPassword']
 )) {
-	$statement = $pdo->prepare('SELECT * FROM `users` WHERE `users`.`id` = :id');
-	$statement->execute([':id' => $_SESSION['user']['userid']]);
+	$statement = $pdo->query('SELECT * FROM `users` WHERE `users`.`id` = '.$_SESSION['user']['userid']);
 	$user = $statement->fetch();
 	if(
 		is_array($user)
@@ -22,12 +21,8 @@ if(isset(
 		&& ((string)$_POST['password']) === ((string)$_POST['confirmPassword'])
 	) {
 		$new_hash = password_hash((string)$_POST['password'], PASSWORD_DEFAULT);
-		$statement = $pdo->prepare('UPDATE `users` SET `password` = :password WHERE `id` = :id');
 
-		if($statement->execute([
-			':id' => $_SESSION['user']['userid'],
-			':password' => $new_hash,
-		])) {
+		if($pdo->query("UPDATE `users` SET `password` = '$new_hash' WHERE `id` = '{$_SESSION['user']['userid']}'")) {
 			$errmsg = "Success";
 		} else {
 			$error = true;

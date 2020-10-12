@@ -33,6 +33,15 @@ la base de données avec comme utilisateur administrateur `alice` et le mot de p
 
 **Ce fichier doit être supprimé une fois l'installation faite**
 
+### Arrêter le docker
+
+Pour arrêter l'application, il suffit de lancer les commandes suivantes. Ceci terminera l'application  et supprimera 
+le container docker.
+
+```shell
+make stop
+```
+
 ## Manuel d'utilisation de l'application
 
 ### Connection (`login.php`)

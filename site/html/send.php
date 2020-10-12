@@ -5,7 +5,6 @@ require 'inc/head.php';
 
 $userid = $_SESSION['user']['userid'];
 
-var_dump($_POST);
 /*Vérifie l'effectif du message*/
 if(isset(
 	$_POST['to'],

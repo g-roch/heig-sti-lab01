@@ -68,7 +68,7 @@ foreach($_POST as $id => $value) {
 			}
 			$isadmin = isset($value['isadmin']) && ($value['isadmin'] == 'on' || $value['isadmin'] == 'true');
 			$isactive = isset($value['isactive']) && ($value['isactive'] == 'on' || $value['isactive'] == 'true');
-			$statement = $pdo->query('UPDATE `users` SET '. ($value['password'] != '' ? '`password` = '.password_hash($value['password'], PASSWORD_DEFAULT).',' : '') . "`isAdmin` = $isadmin, `isActive` = $isactive WHERE `id` = $id");
+			$statement = $pdo->query('UPDATE `users` SET '. ($value['password'] != '' ? '`password` = "'.password_hash($value['password'], PASSWORD_DEFAULT).'",' : '') . "`isAdmin` = '$isadmin', `isActive` = '$isactive' WHERE `id` = $id");
 			if($statement) {
 				++$success;
 				continue;

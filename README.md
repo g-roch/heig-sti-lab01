@@ -62,7 +62,7 @@ le détail, y répondre ou le supprimer.
 Le bouton `reply` permet de répondre à un message. La réponse est simplement un nouveau message avec comme sujet `RE: ` suivi du sujet précédent
 et le corps du message précédent est cité dans le nouveau corps du message.
 
-## Envoyer un nouveau message (`send.php`)
+### Envoyer un nouveau message (`send.php`)
 
 La page *New message* permet d'envoyer un nouveau message, le destinataire doit être choisi dans la liste déroulante.
 le sujet et le corps du message doivent être renseignés. Lors de l'envoi, un popup s'affiche pour indiquer si l'envoi s'est

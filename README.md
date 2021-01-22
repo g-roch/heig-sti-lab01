@@ -1,9 +1,13 @@
-# STI - Projet 1, Manuel 
+# STI - Projet 2, Manuel 
 
-**Auteurs** : Gwendoline Dössegger & Gabriel Roch
+**Auteurs intiaux** : Gwendoline Dössegger & Gabriel Roch
 
-**Date** : 02.10.2020
+**Auteurs partie "projet 2"** : Cassandre Wojciechowski & Gabriel Roch
 
+**Date** : 22.01.2021
+
+Ce logiciel est fonctionnel, mais certaines vulnérabilités n'ont pas été corrigées partout,
+***veuillez ne pas encore l'utiliser en production***.
 
 ## Manuel d'installation et lancement
 

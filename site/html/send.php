@@ -15,8 +15,9 @@ if(isset(
 	$_POST['body'] != ""
 ){
 
-	$statement = $pdo->query("INSERT INTO messages (`subject`,`body`,`from`,`to`) VALUES ('$_POST[subject]','$_POST[body]','$userid','$_POST[to]')");
-	
+    /* TODO: GRH vuln: injection SQL */
+    $statement = $pdo->query("INSERT INTO messages (`subject`,`body`,`from`,`to`) VALUES ('$_POST[subject]','$_POST[body]','$userid','$_POST[to]')");
+	echo "<pre>"; var_dump($statement); echo "</pre>";
 	$message = $statement?'Message sent':'Message not sent';
 	$title = $statement?'Success':'Error';
 	$color = $statement?'success':'danger';
@@ -39,6 +40,7 @@ $to = '';
 
 /*Gestion de la réponse d'un message*/
 if(isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
+    /* TODO: GRH vuln: injection SQL */
 	$statement = $pdo->query("SELECT * FROM `messages` WHERE `id` = '$_GET[replyto]'");
 	$a = $statement->fetch();
 

@@ -6,7 +6,10 @@ require 'inc/head.php';
 
 /*Supprime le message choisi*/
 if(isset($_GET['delete'])) {
-	$statement = $pdo->query("DELETE FROM `messages` WHERE `id` = $_GET[delete]");	
+    /* TODO: GRH vuln: injection SQL */
+//	$statement = $pdo->query("DELETE FROM `messages` WHERE `id` = $_GET[delete]");
+	$statement = $pdo->prepare("DELETE FROM `messages` WHERE `id` = ?");
+	$statement->execute([$_GET["delete"]]);
 	header('Location: ?');
 	exit();
 }
@@ -46,7 +49,9 @@ SQL
 			<tbody>
 				<?php foreach($messages as $message): ?>
 				<tr data-id="<?= htmlentities($message['id']) ?>">
-					<div id="body-<?= htmlentities($message['id']) ?>" class="sr-only"><?= ($message['body']); ?></div>
+                    <!-- TODO: GRH vuln: injection HTML -->
+<!--                    <div id="body---><?//= htmlentities($message['id']) ?><!--" class="sr-only">--><?//= ($message['body']); ?><!--</div>-->
+                    <div id="body-<?= htmlentities($message['id']) ?>" class="sr-only"><?= htmlentities($message['body']); ?></div>
 					<td class="field-from" ><?= htmlentities($message['from']) ?></td>
 					<td id="subject-<?= htmlentities($message['id']) ?>" class="field-subject" ><?= htmlentities($message['subject']) ?></td>
 					<td class="field-date" ><?= htmlentities((new DateTime($message['dateSent']))->format("l, F jS Y H:i:s")) ?></td>

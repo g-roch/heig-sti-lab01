@@ -12,6 +12,7 @@ if(!ADMIN) {
 
 /*Suppression de l'utilisateur selectionne*/
 if(isset($_GET['delete'])) {
+    /* TODO: GRH vuln: injection SQL */
 	$statement = $pdo->query("DELETE FROM `users` WHERE `id` = $_GET[delete]");
 	header('Location: ?');
 	exit();
@@ -31,58 +32,67 @@ function alert($message) {
 
 $success = 0;
 
-//Traitement des modifications demandés par l'utilisateur
-foreach($_POST as $id => $value) {
+// Vérification du token CSRF
+if (isset($_POST['csrf'], $_SESSION['token']))
+    if ($_SESSION['token'] !== $_POST['csrf']) {
+        // New token
+        $_SESSION['token'] = bin2hex(openssl_random_pseudo_bytes(32));
+    } else {
 
-	//Ajout d'un nouvel enregistrement
-	if($id === 'new') {
-		if(isset(
-			$value['username'],
-			$value['password'],
-			$value['confirm-password']
-		) && $value['username'] != '' && $value['password'] != ''
-		) {
-			if($value['password'] !== $value['confirm-password']) {
-				alert("Password and confirm for <strong>new</strong> user don't match");
-				continue;
-			}
-			$isadmin = isset($value['isadmin']) && ($value['isadmin'] == 'on' || $value['isadmin'] == 'true');
-			$isactive = isset($value['isactive']) && ($value['isactive'] == 'on' || $value['isactive'] == 'true');
-			if($pdo->query("INSERT INTO `users` (`username`, `password`, `isAdmin`, `isActive`) VALUES ('$value[username]', '".password_hash($value['password'], PASSWORD_DEFAULT)."', '$isadmin', '$isactive')")) {
-				++$success;
-				continue;
-			} else {
-				alert("Database update failed for <strong>new</strong> user");
-				continue;
-			}
-		}
-	//Modification de l'existant
-	} elseif(is_int($id)) {
-		if(isset(
-			$value['password'],
-			$value['confirm-password']
-		)) {
-			if($value['password'] !== $value['confirm-password']) {
-				alert("Password and confirm for <strong>$id</strong> user don't match");
-				continue;
-			}
-			$isadmin = isset($value['isadmin']) && ($value['isadmin'] == 'on' || $value['isadmin'] == 'true');
-			$isactive = isset($value['isactive']) && ($value['isactive'] == 'on' || $value['isactive'] == 'true');
-			$statement = $pdo->query('UPDATE `users` SET '. ($value['password'] != '' ? '`password` = "'.password_hash($value['password'], PASSWORD_DEFAULT).'",' : '') . "`isAdmin` = '$isadmin', `isActive` = '$isactive' WHERE `id` = $id");
-			if($statement) {
-				++$success;
-				continue;
-			} else {
-				alert("Database update failed for <strong>$id</strong> user");
-				continue;
-			}
-		} else {
-			alert("Missing entry for <strong>$id</strong> user");
-			continue;
-		}
-	}
-}
+        //Traitement des modifications demandés par l'utilisateur
+        foreach ($_POST as $id => $value) {
 
+            //Ajout d'un nouvel enregistrement
+            if ($id === 'new') {
+                if (isset(
+                        $value['username'],
+                        $value['password'],
+                        $value['confirm-password']
+                    ) && $value['username'] != '' && $value['password'] != ''
+                ) {
+                    if ($value['password'] !== $value['confirm-password']) {
+                        alert("Password and confirm for <strong>new</strong> user don't match");
+                        continue;
+                    }
+                    $isadmin = isset($value['isadmin']) && ($value['isadmin'] == 'on' || $value['isadmin'] == 'true');
+                    $isactive = isset($value['isactive']) && ($value['isactive'] == 'on' || $value['isactive'] == 'true');
+                    /* TODO: GRH vuln: injection SQL */
+                    if ($pdo->query("INSERT INTO `users` (`username`, `password`, `isAdmin`, `isActive`) VALUES ('$value[username]', '" . password_hash($value['password'], PASSWORD_DEFAULT) . "', '$isadmin', '$isactive')")) {
+                        ++$success;
+                        continue;
+                    } else {
+                        alert("Database update failed for <strong>new</strong> user");
+                        continue;
+                    }
+                }
+                //Modification de l'existant
+            } elseif (is_int($id)) {
+                if (isset(
+                    $value['password'],
+                    $value['confirm-password']
+                )) {
+                    if ($value['password'] !== $value['confirm-password']) {
+                        alert("Password and confirm for <strong>$id</strong> user don't match");
+                        continue;
+                    }
+                    $isadmin = isset($value['isadmin']) && ($value['isadmin'] == 'on' || $value['isadmin'] == 'true');
+                    $isactive = isset($value['isactive']) && ($value['isactive'] == 'on' || $value['isactive'] == 'true');
+                    /* TODO: GRH vuln: injection SQL */
+                    $statement = $pdo->query('UPDATE `users` SET ' . ($value['password'] != '' ? '`password` = "' . password_hash($value['password'], PASSWORD_DEFAULT) . '",' : '') . "`isAdmin` = '$isadmin', `isActive` = '$isactive' WHERE `id` = $id");
+                    if ($statement) {
+                        ++$success;
+                        continue;
+                    } else {
+                        alert("Database update failed for <strong>$id</strong> user");
+                        continue;
+                    }
+                } else {
+                    alert("Missing entry for <strong>$id</strong> user");
+                    continue;
+                }
+            }
+        }
+    }
 ?>
 
 <script>
@@ -133,6 +143,7 @@ foreach($_POST as $id => $value) {
 </script>
 
 <h1>Users list</h1>
+
 <div class="row">
 	<div class="col">
 		<!-- Affichage de la liste des utilisateurs  -->
@@ -171,6 +182,11 @@ foreach($_POST as $id => $value) {
 					    <input type="password" name="new[confirm-password]" autocomplete="new-password" placeholder="confirm password" /></td>
 					<td><input type="checkbox" name="new[isadmin]" /> admin</td>
 					<td><input type="checkbox" name="new[isactive]" checked="checked" /> active</td>
+                    <?php
+                    // New token
+                    $_SESSION['token'] = bin2hex(openssl_random_pseudo_bytes(32));
+                    ?>
+                    <input type="hidden" name="csrf" value="<?= htmlentities($_SESSION['token']) ?>" />
 					<td><button type="submit" class="btn btn-outline-warning btn-sm">save</button></td>
 				</tr>
 			</tfoot>
